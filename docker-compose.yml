@@ -1,0 +1,91 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "Passw0rd123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - appnetwork
+    volumes:
+      - sql_data:/var/opt/mssql  # Persist SQL Server data
+      - ./init-sql:/init-sql  # Mount the init-sql folder to initialize the database
+    command: /bin/bash -c "/opt/mssql/bin/sqlservr & /init-sql/init-db.sh"  # Start SQL Server and run the init script
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Passw0rd123 -Q 'SELECT 1'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  appusermanager:
+    build:
+      context: .
+      dockerfile: ./AppUserManager/Dockerfile
+    container_name: appusermanager
+    ports:
+      - "8000:80"
+    networks:
+      - appnetwork
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AppUserManagerDb;User Id=myadmin;Password=Passw0rd123;MultipleActiveResultSets=true;TrustServerCertificate=True
+    depends_on:
+      - sqlserver
+    volumes:
+      - ./data-protection-keys:/root/.aspnet/DataProtection-Keys  # Persist data protection keys
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+
+  eventmanagement:
+    build:
+      context: .
+      dockerfile: ./EventManagement/Dockerfile
+    container_name: eventmanagement
+    ports:
+      - "5000:80"
+    networks:
+      - appnetwork
+    depends_on:
+      - sqlserver
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+
+  jobboard:
+    build:
+      context: .
+      dockerfile: ./JobBoard/Dockerfile
+    container_name: jobboard
+    ports:
+      - "8002:80"
+    networks:
+      - appnetwork
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=JobBoardDb;User Id=myadmin;Password=Passw0rd123;MultipleActiveResultSets=true;TrustServerCertificate=True
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+
+networks:
+  appnetwork:
+    driver: bridge
+
+volumes:
+  sql_data:

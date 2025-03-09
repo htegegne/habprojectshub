@@ -1,0 +1,25 @@
+﻿@model JobBoard.Models.Entities.JobListing
+
+@{
+    ViewData["Title"] = "Job Details";
+}
+
+<h2>Job Details</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Title</h4>
+        <p><strong>Company:</strong> @Model.CompanyName</p>
+        <p><strong>Description:</strong> @Model.Description</p>
+        <p><strong>Education Required:</strong> @Model.RequiredEducationLevel</p>
+        <p><strong>Location:</strong> @Model.Location</p>
+        <p><strong>Posted Date:</strong> @(Model.PostedDate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
+        <p><strong>Job Type:</strong> @Model.JobType</p>
+        <p><strong>Salary Range:</strong> @Model.SalaryRange</p>
+        <p><strong>Contact Email:</strong> <a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></p>
+        <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+    </div>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

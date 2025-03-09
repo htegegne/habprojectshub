@@ -1,0 +1,44 @@
+﻿@model IEnumerable<JobListing>
+
+@{
+    ViewData["Title"] = "Job Listings";
+}
+<!-- Search Form -->
+<form method="get" asp-action="Index">
+    <div class="form-group">
+        <input type="text" name="searchTerm" class="form-control" placeholder="Search by title, company, or location..." value="@Context.Request.Query["searchTerm"]" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a asp-action="Index" class="btn btn-secondary">Reset</a>
+</form>
+<br />
+
+<h2>Job Listings</h2>
+<a asp-action="Create" class="btn btn-primary">Create New Job</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var job in Model)
+        {
+                <tr>
+                    <td>@job.Title</td>
+                    <td>@job.CompanyName</td>
+                    <td>@job.Location</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@job.Id" class="btn btn-info">Details</a>
+                        <a asp-action="Edit" asp-route-id="@job.Id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@job.Id" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>

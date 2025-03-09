@@ -1,0 +1,73 @@
+﻿@model JobBoard.Models.Entities.JobListing
+
+@{
+    ViewData["Title"] = "Create Job";
+}
+
+<h2>Create Job</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
+        <input asp-for="Title" class="form-control" required />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CompanyName" class="control-label"></label>
+        <input asp-for="CompanyName" class="form-control" required />
+        <span asp-validation-for="CompanyName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RequiredEducationLevel" class="control-label"></label>
+        <input asp-for="RequiredEducationLevel" class="form-control" />
+        <span asp-validation-for="RequiredEducationLevel" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Location" class="control-label"></label>
+        <input asp-for="Location" class="form-control" required />
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PostedDate" class="control-label"></label>
+        <input asp-for="PostedDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd") readonly" />
+        <span asp-validation-for="PostedDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="JobType" class="control-label"></label>
+        <input asp-for="JobType" class="form-control" />
+        <span asp-validation-for="JobType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SalaryRange" class="control-label"></label>
+        <input asp-for="SalaryRange" class="form-control" />
+        <span asp-validation-for="SalaryRange" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ContactEmail" class="control-label"></label>
+        <input asp-for="ContactEmail" type="email" class="form-control" />
+        <span asp-validation-for="ContactEmail" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PhoneNumber" class="control-label"></label>
+        <input asp-for="PhoneNumber" type="tel" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-success">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>
