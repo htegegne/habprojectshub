@@ -1,6 +1,17 @@
+using Marketplace.Services;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+
+builder.Services.AddDbContext<MarketplaceDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IMarketplaceRepository, DbMarketplaceRepository>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
